@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Toolkit</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script>
+    let timer;
+
+    function startTimer() {
+      let minutes = parseInt(document.getElementById("minutes").value) || 25;
+      let seconds = minutes * 60;
+      timer = setInterval(() => {
+        if (seconds > 0) {
+          seconds--;
+          let m = Math.floor(seconds / 60);
+          let s = seconds % 60;
+          document.getElementById("timer").innerText =
+            `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        } else {
+          clearInterval(timer);
+          alert("⏰ Time's up!");
+        }
+      }, 1000);
+    }
+
+    function resetTimer() {
+      clearInterval(timer);
+      document.getElementById("timer").innerText = "25:00";
+    }
+
+    function updateClockAndDate() {
+      const now = new Date();
+      const h = now.getHours().toString().padStart(2, '0');
+      const m = now.getMinutes().toString().padStart(2, '0');
+      const s = now.getSeconds().toString().padStart(2, '0');
+      const time = `${h}:${m}:${s}`;
+      document.getElementById("clock").innerText = `🕒 ${time}`;
+
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const date = now.toLocaleDateString(undefined, options);
+      document.getElementById("date").innerText = `📅 ${date}`;
+    }
+
+    setInterval(updateClockAndDate, 1000);
+    window.onload = updateClockAndDate;
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div id="clock"></div>
+    <div id="date"></div>
+
+    <h1>🧮 Calculator</h1>
+    <form method="POST">
+      <input type="text" name="expression" placeholder="e.g. 12 * (3 + 2)" required>
+      <button type="submit">=</button>
+    </form>
+    <div class="result">{{ result }}</div>
+
+    <hr>
+
+    <h1>⏱️ Pomodoro Timer</h1>
+    <input type="number" id="minutes" placeholder="25" min="1" />
+    <div>
+      <button onclick="startTimer()">Start</button>
+      <button onclick="resetTimer()">Reset</button>
+    </div>
+    <div id="timer">25:00</div>
+  </div>
+</body>
+</html>
